@@ -434,13 +434,27 @@ async def get_document_type(path):
         r".+(\.|_)(rar|7z|zip|bin)(\.0*\d+)?$", path
     ):
         return is_video, is_audio, is_image
+    
+    # Fast extension-based checks
+    lower_path = path.lower()
+    if lower_path.endswith((".mp4", ".mkv", ".webm", ".avi", ".mov", ".flv", ".wmv", ".m4v", ".3gp", ".ts", ".m2ts", ".mpeg", ".mpg")):
+        return True, False, False
+    if lower_path.endswith((".mp3", ".m4a", ".wav", ".flac", ".ogg", ".opus", ".amr", ".aac", ".wma", ".mka")):
+        return False, True, False
+    if lower_path.endswith((".png", ".jpg", ".jpeg", ".webp", ".bmp", ".gif", ".tiff", ".heic", ".heif")):
+        return False, False, True
+
     mime_type = await sync_to_async(get_mime_type, path)
     if mime_type.startswith("audio"):
         return False, True, False
     if mime_type.startswith("image"):
         return False, False, True
-    if not mime_type.startswith("video") and not mime_type.endswith("octet-stream"):
+    if mime_type.startswith("video"):
+        return True, False, False
+    if not mime_type.endswith("octet-stream"):
         return is_video, is_audio, is_image
+    
+    import json
     try:
         result = await cmd_exec([
             "ffprobe",
@@ -454,18 +468,16 @@ async def get_document_type(path):
         ])
         if res := result[1]:
             LOGGER.warning(f"Get Document Type: {res}")
+        if result[0]:
+            fields = json.loads(result[0]).get("streams")
+            if fields:
+                for stream in fields:
+                    if stream.get("codec_type") == "video":
+                        is_video = True
+                    elif stream.get("codec_type") == "audio":
+                        is_audio = True
     except Exception as e:
         LOGGER.error(f"Get Document Type: {e}. Mostly File not found!")
-        return is_video, is_audio, is_image
-    fields = eval(result[0]).get("streams")
-    if fields is None:
-        LOGGER.error(f"get_document_type: {result}")
-        return is_video, is_audio, is_image
-    for stream in fields:
-        if stream.get("codec_type") == "video":
-            is_video = True
-        elif stream.get("codec_type") == "audio":
-            is_audio = True
     return is_video, is_audio, is_image
 
 async def get_audio_thumb(audio_file):
