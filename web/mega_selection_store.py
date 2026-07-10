@@ -8,12 +8,13 @@ _BASE_DIR = "/usr/src/app/downloads/.mega_selections"
 _STALE_AFTER_SECONDS = 6 * 60 * 60
 
 
-def _path(gid: str) -> str:
-    return os.path.join(_BASE_DIR, f"{gid}.json")
+def _path(gid) -> str:
+    return os.path.join(_BASE_DIR, f"{str(gid)}.json")
 
 
-def _is_safe_gid(gid: str) -> bool:
-    if not gid or not isinstance(gid, str):
+def _is_safe_gid(gid) -> bool:
+    gid = str(gid)
+    if not gid:
         return False
     return all(c.isalnum() or c in "-_" for c in gid)
 
