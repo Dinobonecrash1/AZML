@@ -88,6 +88,7 @@ from .modules import (
     gd_clean,
     broadcast,
     category_select,
+    mega_select,
 )
 
 
