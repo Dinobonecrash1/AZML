@@ -630,6 +630,24 @@ class TgUploader:
         try:
             is_video, is_audio, is_image = await get_document_type(self.__up_path)
 
+            ext = ospath.splitext(self.__up_path)[1]
+            if not ext:
+                from bot.helper.ext_utils.fs_utils import get_mime_type
+                mime_type = await sync_to_async(get_mime_type, self.__up_path)
+                new_ext = ""
+                if is_image:
+                    new_ext = ".png" if "png" in mime_type else (".gif" if "gif" in mime_type else (".webp" if "webp" in mime_type else ".jpg"))
+                elif is_video:
+                    new_ext = ".mkv" if ("x-matroska" in mime_type or "mkv" in mime_type) else (".webm" if "webm" in mime_type else ".mp4")
+                elif is_audio:
+                    new_ext = ".mp3" if "mpeg" in mime_type else (".wav" if "wav" in mime_type else (".ogg" if "ogg" in mime_type else (".opus" if "opus" in mime_type else ".m4a")))
+                
+                if new_ext:
+                    new_path = f"{self.__up_path}{new_ext}"
+                    await aiorename(self.__up_path, new_path)
+                    self.__up_path = new_path
+                    file = f"{file}{new_ext}"
+
             if self.__leech_utils["thumb"]:
                 thumb = await self.get_custom_thumb(self.__leech_utils["thumb"])
 
