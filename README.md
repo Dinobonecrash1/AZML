@@ -14,12 +14,12 @@
 
 <div align="center">
 
-[![](https://img.shields.io/github/repo-size/utkarshdubey2008/AZML?color=green&label=Repo%20Size&labelColor=292c3b)](#)
-[![](https://img.shields.io/github/commit-activity/m/utkarshdubey2008/AZML?logo=github&labelColor=292c3b&label=Github%20Commits)](#)
-[![](https://img.shields.io/github/license/utkarshdubey2008/AZML?style=flat&label=License&labelColor=292c3b)](#)
-[![](https://img.shields.io/github/issues-raw/utkarshdubey2008/AZML?style=flat&label=Open%20Issues&labelColor=292c3b)](#)
-[![](https://img.shields.io/github/issues-closed-raw/utkarshdubey2008/AZML?style=flat&label=Closed%20Issues&labelColor=292c3b)](#)
-[![](https://img.shields.io/github/stars/utkarshdubey2008/AZML?style=flat&logo=github&label=Stars&labelColor=292c3b&color=yellow)](#)
+[![](https://img.shields.io/github/repo-size/aquib4040/AZML?color=green&label=Repo%20Size&labelColor=292c3b)](#)
+[![](https://img.shields.io/github/commit-activity/m/aquib4040/AZML?logo=github&labelColor=292c3b&label=Github%20Commits)](#)
+[![](https://img.shields.io/github/license/aquib4040/AZML?style=flat&label=License&labelColor=292c3b)](#)
+[![](https://img.shields.io/github/issues-raw/aquib4040/AZML?style=flat&label=Open%20Issues&labelColor=292c3b)](#)
+[![](https://img.shields.io/github/issues-closed-raw/aquib4040/AZML?style=flat&label=Closed%20Issues&labelColor=292c3b)](#)
+[![](https://img.shields.io/github/stars/aquib4040/AZML?style=flat&logo=github&label=Stars&labelColor=292c3b&color=yellow)](#)
 [![](https://img.shields.io/badge/Telegram%20Channel-Join-9cf?logo=telegram&labelColor=292c3b)](https://t.me/Thealphabotz)
 [![](https://img.shields.io/badge/Support%20Group-Join-9cf?logo=telegram&labelColor=292c3b)](https://t.me/AlphaBotzChat)
 
@@ -104,7 +104,28 @@
 </details>
 
 <details>
-  <summary><b>📦 Archive Handling</b></summary>
+  <summary><b>🗂️ Mega Folder File Selection</b></summary>
+
+- Use the `-s` flag with any Mega **folder** link to select individual files before downloading
+- Inline paginated button UI — 6 files per page with toggle, Select All, Deselect All, Prev/Next
+- Shows filename, relative path, and file size for each entry
+- Live selected count and total size update as you toggle
+- Only selected files are downloaded — unselected files are never fetched
+- Full sub-directory structure is preserved in the output folder
+- Size limit check runs on the selected total (not the full folder size)
+- Works for both mirror and leech modes
+- Only the user who triggered the download can interact with the selection UI
+
+**Usage:**
+```
+/mirror https://mega.nz/folder/xxx -s
+/leech  https://mega.nz/folder/xxx -s
+```
+
+</details>
+
+<details>
+    <summary><b>📦 Archive Handling</b></summary>
 
 - Extraction via 7-zip: RAR, ZIP, 7z, ISO, TAR, and split archives
 - Password-protected archive extraction and creation
