@@ -4,7 +4,8 @@ from qbittorrentapi import NotFound404Error, Client as qbClient
 from aria2p import API as ariaAPI, Client as ariaClient
 from flask import Flask, request
 
-from web.nodes import make_tree
+from web.nodes import make_tree, make_mega_tree
+from web.mega_selection_store import MegaSelectionStore
 
 app = Flask(__name__)
 
@@ -456,7 +457,15 @@ def list_torrent_contents(id_):
     if request.args["pin_code"] != pincode:
         return "<h1>Incorrect pin code</h1>"
 
-    if len(id_) > 20:
+    mega_store = MegaSelectionStore()
+    mega_files = mega_store.get_data(id_)
+    if mega_files is not None:
+        selected_ids = set(mega_store.read_selection(id_))
+        for f in mega_files:
+            if not f.get("is_dir"):
+                f["selected"] = f["id"] in selected_ids
+        cont = make_mega_tree(mega_files)
+    elif len(id_) > 20:
         client = qbClient(host="localhost", port="8090")
         res = client.torrents_files(torrent_hash=id_)
         cont = make_tree(res)
@@ -474,7 +483,15 @@ def set_priority(id_):
 
     data = dict(request.form)
     resume = ""
-    if len(id_) > 20:
+    mega_store = MegaSelectionStore()
+    if mega_store.get_data(id_) is not None:
+        selected_ids = []
+        for i, value in data.items():
+            if "filenode" in i and value == "on":
+                node_id = i.split("_")[-1]
+                selected_ids.append(node_id)
+        mega_store.save_selection(id_, selected_ids)
+    elif len(id_) > 20:
         pause = ""
 
         for i, value in data.items():
@@ -755,3 +772,4 @@ def page_not_found(e):
 
 if __name__ == "__main__":
     app.run()
+             
