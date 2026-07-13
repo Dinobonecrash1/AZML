@@ -753,7 +753,7 @@ class TgUploader:
                     width=width,
                     height=height,
                     thumb=thumb,
-                    cover=thumb if self.__client == user else None,
+                    cover=thumb,
                     supports_streaming=True,
                     disable_notification=True,
                     progress=self.__upload_progress,
